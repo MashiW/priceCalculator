@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class PriceServiceImpl implements PriceService {
 
     @Override
-    public int calculatePrice(PriceRequest priceRequest) {
-        return 0;
+    public double calculatePrice(PriceRequest priceRequest) {
+        return priceRequest.getItemCount() * 100.0;
     }
 }

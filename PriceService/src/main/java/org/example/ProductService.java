@@ -2,10 +2,9 @@ package org.example;
 
 import org.example.model.Product;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
 public interface ProductService {
-    Page<org.example.model.Product> getAllProducts(PageRequest pageRequest);
+    Page<Product> getAllProducts(int offset, int limit);
 
     Product getProduct(String productId) throws Exception;
 }

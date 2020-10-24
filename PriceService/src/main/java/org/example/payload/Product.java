@@ -9,11 +9,10 @@ public class Product {
     private String productId;
     private String productName;
     private Meta meta;
+    private float unitPrice;
 
     public static class Meta {
-        private String cartonId;
         private int cartonSize;
         private float cartonPrice;
-        private float singleUnitPrice;
     }
 }

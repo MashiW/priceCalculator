@@ -4,6 +4,6 @@ import org.example.payload.PriceRequest;
 
 public interface PriceService {
 
-    int calculatePrice(PriceRequest priceRequest);
+    double calculatePrice(PriceRequest priceRequest);
 
 }
