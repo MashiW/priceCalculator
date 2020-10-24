@@ -22,5 +22,5 @@ public class Product {
 
     protected String productName;
 
-
+    protected Meta meta;
 }
