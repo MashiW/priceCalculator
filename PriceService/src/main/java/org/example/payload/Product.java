@@ -8,10 +8,10 @@ import lombok.Setter;
 public class Product {
     private String productId;
     private String productName;
-    private Meta meta;
+    private ProductMeta meta;
     private float unitPrice;
 
-    public static class Meta {
+    public static class ProductMeta {
         private int cartonSize;
         private float cartonPrice;
     }

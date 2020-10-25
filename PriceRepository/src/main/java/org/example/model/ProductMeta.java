@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Meta {
+public class ProductMeta {
     private int cartonSize;
     private float cartonPrice;
 }
