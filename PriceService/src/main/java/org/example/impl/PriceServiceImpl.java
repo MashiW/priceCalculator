@@ -3,16 +3,20 @@ package org.example.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.example.PriceService;
 import org.example.ProductRepository;
-import org.example.model.Meta;
+import org.example.impl.service.exception.ProductNotFoundException;
+import org.example.model.ProductMeta;
 import org.example.model.Product;
 import org.example.payload.PriceRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Slf4j
 @Service
 public class PriceServiceImpl implements PriceService {
+
+    // TODO: Ideally the following should be retrieved from database
+    private static final double DISCOUNT_FACTOR = 0.9;
+    private static final double LOOSE_PRICE_ADDITION_FACTOR = 1.3;
+    private static final int DISCOUNT_ELIGIBILITY_MARGIN = 3;
 
     private final ProductRepository productRepository;
 
@@ -21,58 +25,52 @@ public class PriceServiceImpl implements PriceService {
     }
 
     @Override
-    public Meta getCarton(String productId) {
-        Optional<Product> product = productRepository.findProductById(productId);
-        return product.get().getMeta();
+    public Product getProduct(String productId) throws ProductNotFoundException {
+        return productRepository
+                .findProductById(productId)
+                .orElseThrow(()-> new ProductNotFoundException(productId));
     }
 
     @Override
-    public double calculatePrice(PriceRequest priceRequest) {
+    public double calculatePrice(PriceRequest priceRequest) throws ProductNotFoundException {
 
-        Meta carton = getCarton(priceRequest.getProductId());
+        ProductMeta carton = getProduct(priceRequest.getProductId()).getProductMeta();
         int cartonSize = carton.getCartonSize();
-        float cartonPrice = carton.getCartonPrice();
-
         int orderedItemCount = priceRequest.getItemCount();
-        double totalPrice = 0;
-        int cartonQty =0;
-        double discountedPrice = 0.9;
-        int singleItemsQty = 0;
-        double singleItemGivenPrice = (cartonPrice/cartonSize) * 1.3 ;
-        double singleItemCalculatedPrice = 0;
-        double totalCartonPrice = 0;
+        float cartonPrice = carton.getCartonPrice();
+        double totalPrice;
 
-        //only cartons
-        if(orderedItemCount%cartonSize ==0 ){
-            cartonQty = orderedItemCount/cartonSize;
+        if (orderedItemCount % cartonSize == 0) {
+            int cartonsQty = orderedItemCount / cartonSize;
 
-            if(cartonQty >= 3){
-                totalPrice = cartonPrice * discountedPrice * cartonQty;
-            }else{
-                totalPrice = cartonPrice * cartonQty;
+            totalPrice = cartonPrice * cartonsQty;
+
+            if (cartonsQty >= DISCOUNT_ELIGIBILITY_MARGIN) {
+                totalPrice *= DISCOUNT_FACTOR;
             }
         }
-        // both cartons and single units
-        else if(orderedItemCount/cartonSize >= 1 &&
-                orderedItemCount%cartonSize < cartonSize){
+        else if(orderedItemCount < cartonSize) {
+            return orderedItemCount * calculateLooseItemsPrice(cartonSize, cartonPrice);
+        }
+        else {
+            int retailItemsQty = orderedItemCount % cartonSize;
+            int cartonsQty = (orderedItemCount - retailItemsQty) / cartonSize;
 
-            cartonQty = orderedItemCount/cartonSize;
-            singleItemsQty = orderedItemCount%cartonSize;
-            singleItemCalculatedPrice = singleItemsQty * singleItemGivenPrice;
+            double totalForLooseItems = retailItemsQty * calculateLooseItemsPrice(cartonSize, cartonPrice);
 
-            if(cartonQty >= 3){
-                totalCartonPrice = cartonPrice * discountedPrice * cartonQty;
-                totalPrice = singleItemCalculatedPrice + totalCartonPrice;
-            }else{
-                totalCartonPrice = cartonPrice * cartonQty;
-                totalPrice = totalCartonPrice + singleItemCalculatedPrice;
+            double totalForCartons = cartonPrice * cartonsQty;
+
+            if (cartonsQty >= DISCOUNT_ELIGIBILITY_MARGIN) {
+                totalForCartons *= DISCOUNT_FACTOR;
             }
+
+            totalPrice = totalForLooseItems + totalForCartons;
         }
-        // only single units, no cartons
-        else if(orderedItemCount%cartonSize < cartonSize){
-            singleItemsQty = orderedItemCount%cartonSize;
-            totalPrice = singleItemsQty * singleItemGivenPrice;
-        }
+
         return totalPrice;
+    }
+
+    private double calculateLooseItemsPrice(int cartonSize, float cartonPrice) {
+        return (cartonPrice / cartonSize) * LOOSE_PRICE_ADDITION_FACTOR;
     }
 }
