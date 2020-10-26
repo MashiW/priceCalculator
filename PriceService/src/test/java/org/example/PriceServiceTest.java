@@ -28,7 +28,7 @@ public class PriceServiceTest {
     public void whenCalculatePrice_22Items() throws ProductNotFoundException{
         Product product = createMockProduct();
 
-        when(productRepository.findProductById(anyString()))
+        when(productRepository.findByProductId(anyString()))
                 .thenReturn(Optional.of(product));
 
         PriceRequest request = new PriceRequest();
@@ -45,7 +45,7 @@ public class PriceServiceTest {
     public void whenCalculatePrice_20Items() throws ProductNotFoundException {
         Product product = createMockProduct();
 
-        when(productRepository.findProductById(anyString()))
+        when(productRepository.findByProductId(anyString()))
                 .thenReturn(Optional.of(product));
 
         PriceRequest request = new PriceRequest();
@@ -62,7 +62,7 @@ public class PriceServiceTest {
     public void whenCalculatePrice_18Items() throws ProductNotFoundException {
         Product product = createMockProduct();
 
-        when(productRepository.findProductById(anyString()))
+        when(productRepository.findByProductId(anyString()))
                 .thenReturn(Optional.of(product));
 
         PriceRequest request = new PriceRequest();

@@ -27,10 +27,16 @@ public class PriceServiceImpl implements PriceService {
     @Override
     public Product getProduct(String productId) throws ProductNotFoundException {
         return productRepository
-                .findProductById(productId)
+                .findByProductId(productId)
                 .orElseThrow(()-> new ProductNotFoundException(productId));
     }
 
+    /**
+     * Calculates the price based on the price request parameters. Works as the pricing engine.
+     * @param priceRequest Price request object sent from the client
+     * @return Double value indicating the total price for the said quantity
+     * @throws ProductNotFoundException When there is no product for the given ID
+     */
     @Override
     public double calculatePrice(PriceRequest priceRequest) throws ProductNotFoundException {
 

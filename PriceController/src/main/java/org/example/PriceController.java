@@ -34,6 +34,7 @@ public class PriceController {
         return ResponseEntity
                 .ok(ApiResponse.<OrderItemTotalPrice>builder()
                         .code(ApiStatus.SUCCESS)
+                        .message("Gross price calculation completed.")
                         .payload(response)
                         .build());
     }

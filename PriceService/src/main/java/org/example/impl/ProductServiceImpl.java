@@ -30,7 +30,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProduct(String productId) throws Exception {
-        Optional<Product> productOptional = productRepository.findProductById(productId);
+        Optional<Product> productOptional = productRepository.findById(productId);
         if(productOptional.isEmpty()){
             throw new Exception();
         }

@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class OrderItemTotalPrice {
-    private String productId;
-    private double grossTotal;
+    private final String productId;
+    private final double grossTotal;
 }
