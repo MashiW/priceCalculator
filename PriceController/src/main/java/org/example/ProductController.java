@@ -1,14 +1,18 @@
 package org.example;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.dto.ApiResponse;
+import org.example.dto.OrderItemTotalPrice;
+import org.example.dto.ProductResponse;
+import org.example.dto.enums.ApiStatus;
 import org.example.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -23,10 +27,14 @@ public class ProductController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Page<Product>> getAllProducts(@RequestParam(value = "offset") Integer offset,
+    public ResponseEntity<ApiResponse> getAllProducts(@RequestParam(value = "offset") Integer offset,
                                                         @RequestParam(value= "limit") Integer limit){
+
         Page<Product> products = productService.getAllProducts(offset, limit);
-        return ResponseEntity.ok(products);
+        return ResponseEntity.ok(ApiResponse.builder()
+                .code(ApiStatus.SUCCESS)
+                .payload(products)
+                .build());
     }
 
     @GetMapping("/single")
