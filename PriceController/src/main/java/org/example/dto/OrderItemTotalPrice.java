@@ -7,5 +7,5 @@ import lombok.Getter;
 @Builder
 public class OrderItemTotalPrice {
     private final String productId;
-    private final double grossTotal;
+    private final long grossTotal;
 }

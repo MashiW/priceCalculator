@@ -38,7 +38,7 @@ public class PriceServiceImpl implements PriceService {
      * @throws ProductNotFoundException When there is no product for the given ID
      */
     @Override
-    public double calculatePrice(PriceRequest priceRequest) throws ProductNotFoundException {
+    public long calculatePrice(PriceRequest priceRequest) throws ProductNotFoundException {
 
         ProductMeta carton = getProduct(priceRequest.getProductId()).getProductMeta();
         int cartonSize = carton.getCartonSize();
@@ -56,7 +56,7 @@ public class PriceServiceImpl implements PriceService {
             }
         }
         else if(orderedItemCount < cartonSize) {
-            return orderedItemCount * calculateLooseItemsPrice(cartonSize, cartonPrice);
+            totalPrice = orderedItemCount * calculateLooseItemsPrice(cartonSize, cartonPrice);
         }
         else {
             int retailItemsQty = orderedItemCount % cartonSize;
@@ -73,10 +73,20 @@ public class PriceServiceImpl implements PriceService {
             totalPrice = totalForLooseItems + totalForCartons;
         }
 
-        return totalPrice;
+        return normalize(totalPrice);
     }
 
     private double calculateLooseItemsPrice(int cartonSize, float cartonPrice) {
         return (cartonPrice / cartonSize) * LOOSE_PRICE_ADDITION_FACTOR;
+    }
+
+    /**
+     * Normalizes a double amount to a money amount
+     * e.g. 11.375 -> 1138
+     * @param amount Amount to be normalized
+     * @return Normalized long value
+     */
+    private long normalize(double amount) {
+        return Math.round(amount * 100);
     }
 }

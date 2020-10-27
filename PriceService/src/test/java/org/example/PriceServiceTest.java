@@ -35,8 +35,8 @@ public class PriceServiceTest {
         request.setProductId("P00001");
         request.setItemCount(22);
 
-        double expectedPrice = 197.75;
-        double resultPrice = priceService.calculatePrice(request);
+        long expectedPrice = 19775;
+        long resultPrice = priceService.calculatePrice(request);
 
         assertEquals(expectedPrice, resultPrice, "MISMATCH: Expected total price does not match the result.");
     }
@@ -52,8 +52,8 @@ public class PriceServiceTest {
         request.setProductId("P000001");
         request.setItemCount(60);
 
-        double expectedPrice = 472.5;
-        double resultPrice = priceService.calculatePrice(request);
+        long expectedPrice = 47250;
+        long resultPrice = priceService.calculatePrice(request);
 
         assertEquals(expectedPrice, resultPrice, "MISMATCH: Expected total price does not match the result.");
     }
@@ -69,8 +69,8 @@ public class PriceServiceTest {
         request.setProductId("P000001");
         request.setItemCount(18);
 
-        double expectedPrice = 204.75;
-        double resultPrice = priceService.calculatePrice(request);
+        long expectedPrice = 20475;
+        long resultPrice = priceService.calculatePrice(request);
 
         assertEquals(expectedPrice, resultPrice, "MISMATCH: Expected total price does not match the result.");
     }

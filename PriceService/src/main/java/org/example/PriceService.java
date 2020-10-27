@@ -8,6 +8,6 @@ public interface PriceService {
 
     Product getProduct(String productId) throws ProductNotFoundException;
 
-    double calculatePrice(PriceRequest priceRequest) throws ProductNotFoundException;
+    long calculatePrice(PriceRequest priceRequest) throws ProductNotFoundException;
 
 }
